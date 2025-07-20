@@ -1,0 +1,14 @@
+#!/bin/bash
+cd "$(dirname "$0")/.."
+
+# Set classpath including all required JARs
+CP="lib/*:src"
+
+# Compile Java source files
+echo "🔧 Compiling Java files..."
+find src -name "*.java" > sources.txt
+javac -cp "$CP" @sources.txt -d bin
+
+# Run the main UI class
+echo "🚀 Running Speech Recognition Tool..."
+java -cp "lib/*:bin" app.UI
