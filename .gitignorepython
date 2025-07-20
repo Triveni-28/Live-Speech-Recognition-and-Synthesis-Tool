@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# dotenv environment files
+.env
+.env.*
+
+# MySQL dump or credentials
+*.sql
+
+# macOS system files
+.DS_Store
+
+# Log files
+*.log
+
+# VS Code / IntelliJ / Eclipse
+.vscode/
+.idea/
+*.iml
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# AWS EB CLI config files
+.elasticbeanstalk/
+
+# Pip dependency files
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Speech model or training data (optional)
+resources/sphinx-config/*
+!resources/sphinx-config/README.md
+
+# Executables or scripts
+*.sh
+*.exe
+*.bat
+
+# Node modules (if any frontend added)
+node_modules/
