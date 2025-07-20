@@ -1,0 +1,9 @@
+*.class
+*.jar
+*.log
+/target/
+/.idea/
+/.vscode/
+*.iml
+*.db
+/resources/sphinx-config/
