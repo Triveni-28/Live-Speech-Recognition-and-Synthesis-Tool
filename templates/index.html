@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Speech Recognition Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🔊 Speech Recognition Tool</h1>
+        <p>Speak your query and receive a spoken response. Built for accessibility and offline use.</p>
+
+        <form method="POST" action="/listen">
+            <button type="submit" class="record-btn">🎙️ Start Listening</button>
+        </form>
+
+        {% if query %}
+            <div class="result">
+                <h2>You said:</h2>
+                <p>{{ query }}</p>
+                <h2>Response:</h2>
+                <p>{{ response }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
