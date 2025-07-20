@@ -1,0 +1,9 @@
+CREATE DATABASE IF NOT EXISTS speechdb;
+USE speechdb;
+
+CREATE TABLE IF NOT EXISTS queries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    input_text TEXT NOT NULL,
+    output_text TEXT NOT NULL,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
