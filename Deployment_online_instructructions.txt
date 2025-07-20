@@ -1,0 +1,65 @@
+Online Deployment Instructions for Speech Recognition Tool (Java + MySQL)
+
+Project Summary:
+- This project is a Java-based offline speech-to-speech accessibility tool using CMU Sphinx for speech recognition, FreeTTS for voice output, jsoup for web scraping, and MySQL for logging queries.
+- The goal is to deploy it on AWS to be accessible online.
+1. Move Java Backend to AWS EC2 Instance
+- Launch an EC2 instance (Amazon Linux 2 or Ubuntu).
+- SSH into the instance:
+  $ ssh -i <your-key>.pem ec2-user@<your-ec2-public-ip>
+
+- Install Java and MySQL client:
+  $ sudo apt update
+  $ sudo apt install default-jdk mysql-client unzip
+
+- Upload your `SpeechRecognitionTool` directory to the EC2 instance via SCP:
+  $ scp -i <your-key>.pem -r SpeechRecognitionTool ec2-user@<ip>:/home/ec2-user/
+
+- Install required JARs and external tools on the EC2 instance (place them in `lib/`).
+
+2. MySQL Database Setup on AWS RDS
+- Launch an RDS instance (MySQL) and note the endpoint.
+- Enable public access in RDS security group and allow EC2 IP.
+- Use MySQL Workbench or command-line to:
+  - Create a database: `speech_tool`
+  - Run `SpeechRecognitionTool.sql` to create tables.
+
+- Update `DatabaseLogger.java`:
+  - Set host to RDS endpoint.
+  - Replace credentials with the RDS username and password.
+
+3. Modify Code for Online Behavior
+- Make `SpeechListener` listen to speech via web interface.
+- Replace `Main.java` UI-based trigger with HTTP or REST-like service.
+- Add simple HTTP server in Java using SparkJava or embed Jetty/Servlet.
+  (Optional: Replace Java backend with Python Flask + REST if needed).
+
+- Replace UI.java with:
+  - HTML frontend hosted via Apache or Nginx.
+  - Java backend listens to requests and returns responses as audio.
+
+4. Setup Nginx as Reverse Proxy (Optional)
+- Install Nginx on EC2:
+  $ sudo apt install nginx
+
+- Edit `/etc/nginx/sites-available/default` to proxy to Java HTTP port (e.g. 4567).
+
+5. Run Java App on Boot (Production)
+- Add a run script (`run.sh`) and enable it in crontab:
+  $ crontab -e
+  @reboot /home/ec2-user/SpeechRecognitionTool/scripts/run.sh
+
+- Or use a systemd service file.
+
+6. Secure Your Setup
+- Setup HTTPS using Let's Encrypt.
+- Secure database credentials using environment variables or secrets manager.
+
+7. Test the Full Workflow
+- From a browser, visit your EC2 public IP or domain.
+- Speak to the mic input on the HTML page.
+- Your backend receives audio, searches, and responds with voice.
+
+Note:
+- Since Java is used, hosting UI may be more complex; consider moving the UI to React/HTML+JS and keeping Java as backend.
+- Use AWS S3 + CloudFront for static hosting of frontend, EC2 for Java backend, RDS for MySQL.
