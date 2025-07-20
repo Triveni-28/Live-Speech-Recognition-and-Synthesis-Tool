@@ -1,0 +1,103 @@
+Speech Recognition Tool - Online Deployment (AWS Cloud)
+
+a.PROJECT STRUCTURE FOR ONLINE VERSION:
+speech_tool/
+│
+├── app/
+│   ├── main.py               # Flask backend entry point
+│   ├── speech_handler.py     # Handles input, search, and response
+│   ├── tts_engine.py         # Text-to-speech logic
+│   ├── db_logger.py          # MySQL logger
+│
+├── static/
+│   └── styles.css            # Basic styling
+│
+├── templates/
+│   └── index.html            # Web interface for input/output
+│
+├── speech_tool.sql           # MySQL DB schema
+├── requirements.txt          # Python dependencies
+├── run.sh                    # Bash script to run locally
+├── wsgi.py                   # WSGI entry point for online hosting
+└── online_deployment_instructions.txt   # This file
+
+STEP 1: REQUIRED CHANGES TO EXISTING FILES
+
+1. main.py
+
+- Add Flask CORS support.
+- Serve HTML from `templates/index.html`.
+- Accept `/submit_audio` POST route with audio processing.
+
+2. index.html
+
+- Add `<form>` to accept speech input (microphone button or file upload).
+- Use JavaScript to send audio as Base64 to Flask backend (`/submit_audio`).
+- Display final speech text and response on page.
+
+3. speech_handler.py
+
+- Refactor to return responses in JSON for frontend consumption.
+- Add exception handling to support network failures or speech errors.
+
+4. db_logger.py
+
+- Update MySQL hostname to match RDS or online MySQL server.
+- Change from `localhost` to RDS/Cloud DB endpoint or `.env` variable.
+
+5. wsgi.py (NEW FILE)
+
+- Create this file for WSGI servers (Gunicorn, Elastic Beanstalk).
+
+Example:
+
+STEP 2: DEPLOYMENT OPTIONS
+
+Option A: AWS EC2 (Manual VM Setup)
+1. Launch EC2 Ubuntu instance.
+2. SSH into instance.
+3. Install dependencies:
+    sudo apt update
+    sudo apt install python3-pip python3-dev nginx
+4. Upload your project using SCP or Git.
+5. Set up Python environment:
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+6. Run with Gunicorn:
+    gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
+7. Configure Nginx to reverse proxy port 5000 to 80.
+
+Option B: AWS Elastic Beanstalk
+1. Install EB CLI: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html
+2. Create a file named `.ebextensions/python.config` with WSGI info:
+
+3. Run commands:
+    eb init -p python-3.8 speech-tool
+    eb create speech-tool-env
+    eb open
+
+
+STEP 3: SECURITY & SCALABILITY
+
+
+- Move API keys, DB credentials to `.env` file.
+- Use `python-dotenv` to read `.env`.
+- Enable HTTPS via SSL cert on Nginx or ELB.
+- Use S3 for file uploads (if you record speech).
+- Enable logging for backend errors.
+
+
+EXAMPLE `.env` FILE:
+
+MYSQL_HOST=your-db-host.amazonaws.com
+MYSQL_USER=admin
+MYSQL_PASSWORD=your_password
+MYSQL_DB=speech_tool
+
+
+Final URL:
+Your site will be accessible at:
+http://<your-ec2-public-ip> or
+http://<your-beanstalk-url>.elasticbeanstalk.com/
+
