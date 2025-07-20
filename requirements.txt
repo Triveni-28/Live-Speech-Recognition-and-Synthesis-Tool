@@ -1,0 +1,5 @@
+Java 17+
+FreeTTS
+CMU Sphinx
+MySQL JDBC Driver
+Jsoup
